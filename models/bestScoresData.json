@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "pieces": 9,
+    "rounds": 1,
+    "score":"00:00:39"
+  },
+  {
+  "id": 1,
+  "pieces": 25,
+  "rounds": 3,
+  "score":"00:07:45"
+  },
+  {
+    "id": 1,
+    "pieces": 56,
+    "rounds": 2,
+    "score":"00:27:58"
+  },
+  {
+    "id": 1,
+    "pieces": 100,
+    "rounds": 4,
+    "score":"02:22:42"
+  },
+  {
+    "id": 2,
+    "pieces": 25,
+    "rounds": 5,
+    "score":"00:22:43"
+  },
+  {
+    "id": 2,
+    "pieces": 56,
+    "rounds": 1,
+    "score":"00:12:03"
+  },
+  {
+  "id": 3,
+  "pieces": 25,
+  "rounds": 3,
+  "score":"00:09:05"
+},
+  {
+    "id": 3,
+    "pieces": 56,
+    "rounds": 2,
+    "score":"00:31:08"
+  },
+  {
+    "id": 3,
+    "pieces": 100,
+    "rounds": 2,
+    "score":"01:05:19"
+  },
+  {
+    "id": 3,
+    "pieces": 25,
+    "rounds": 2,
+    "score":"00:12:13"
+  },
+  {
+    "id": 3,
+    "pieces": 56,
+    "rounds": 1,
+    "score":"00:11:13"
+  }
+]
