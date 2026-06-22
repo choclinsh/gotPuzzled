@@ -1,0 +1,136 @@
+/* ============================================================
+   Navbar — themed via App.css CSS variables
+   (the .navbar bar itself is styled in App.css)
+   ============================================================ */
+
+.navbar__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-image {
+    height: 50px; /* Increased from 40px */
+    width: auto;
+    object-fit: contain;
+    display: block;
+    border-radius: var(--radius-sm);
+}
+
+.navbar__logo-text {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+}
+
+/* ---- Nav links ---- */
+.navbar__nav {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar__link {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.4rem 0.9rem;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition), color var(--transition);
+}
+
+.navbar__link:hover {
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+/* ---- User / actions cluster ---- */
+.navbar__user {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.username {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    margin-right: 0.25rem;
+}
+
+.details-btn,
+.settings-btn {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.details-btn:hover,
+.settings-btn:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.logout-btn {
+    background: var(--accent);
+    color: #fff;
+    border: 1px solid var(--accent);
+    padding: 0.4rem 0.9rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition), transform var(--transition);
+}
+
+.logout-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.retro .logout-btn { color: var(--bg-primary); }
+
+/* ---- Profile dropdown ---- */
+.details-dropdown {
+    position: absolute;
+    top: 64px;
+    right: 20px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    padding: 1.25rem 1.4rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    min-width: 240px;
+    border: 1px solid var(--border);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.details-dropdown h4 {
+    font-family: var(--font-display);
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+}
+
+.details-dropdown p {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.35rem;
+}
+
+.details-dropdown p strong { color: var(--text-primary); }

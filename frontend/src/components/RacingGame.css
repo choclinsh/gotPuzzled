@@ -1,0 +1,149 @@
+/* ── Progress bars ─────────────────────────────────────────────────── */
+
+.race-progress {
+  margin-bottom: 1.1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.8rem 1.1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.race-progress__row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.race-progress__row + .race-progress__row {
+  margin-top: 0.55rem;
+}
+
+.race-progress__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  min-width: 72px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.race-progress__bar-bg {
+  flex: 1;
+  height: 12px;
+  background: var(--bg-secondary);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.race-progress__bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+
+.race-progress__bar-fill--opponent {
+  background: var(--text-muted);
+}
+
+.race-progress__count {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 40px;
+  text-align: right;
+}
+
+.retro .race-progress {
+  border-color: var(--accent);
+}
+
+.retro .race-progress__bar-fill--opponent {
+  background: var(--text-secondary);
+}
+
+/* ── Result screen (Victory / Defeat) ─────────────────────────────── */
+
+.race-result {
+  max-width: 480px;
+  margin: 3rem auto;
+  text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2rem 2.5rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.retro .race-result {
+  border-color: var(--accent);
+  box-shadow: 0 0 32px rgba(245, 200, 66, 0.18);
+}
+
+.race-result__icon {
+  font-size: 3.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.race-result h2 {
+  margin-bottom: 0.4rem;
+}
+
+.race-result__sub {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 1.75rem;
+}
+
+.race-result__time {
+  font-family: var(--font-mono);
+  font-size: 3.2rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.retro .race-result__time {
+  text-shadow: 0 0 20px var(--accent);
+}
+
+.race-result__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+.race-result__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 640px) {
+  .race-result {
+    margin: 1.5rem auto;
+    padding: 2rem 1.25rem;
+  }
+
+  .race-result__time {
+    font-size: 2.4rem;
+  }
+
+  .race-progress__label {
+    min-width: 56px;
+  }
+}
