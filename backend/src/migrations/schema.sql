@@ -31,5 +31,5 @@ CREATE TABLE IF NOT EXISTS scores (
     pieces    INT  NOT NULL,
     rounds    INT  NOT NULL,
     timeScore VARCHAR(8) NOT NULL,
-    FOREIGN KEY (userId)   REFERENCES users(userId)     ON DELETE CASCADE,
+    FOREIGN KEY (userId)   REFERENCES users(userId)     ON DELETE CASCADE
 );

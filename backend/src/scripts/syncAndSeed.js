@@ -3,9 +3,24 @@
  * Run once after configuring your .env:  node src/scripts/syncAndSeed.js
  */
 require('dotenv').config();
+const mysql = require('mysql2/promise');
 const { sequelize, User, AdminProfile, Score } = require('../models/index');
 
 async function seed() {
+    // If not exists create database
+    console.log(`Connecting to AWS to check/create database: ${process.env.DB_NAME}...`);
+    const connection = await mysql.createConnection({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASS,
+        port: process.env.DB_PORT || 3306
+    });
+
+    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME}\`;`);
+    await connection.end();
+    console.log(`Database '${process.env.DB_NAME}' is ready.`);
+
+    // Creating tables
     await sequelize.sync({ force: true });
     console.log('Tables created.');
 
