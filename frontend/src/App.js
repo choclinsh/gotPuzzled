@@ -32,7 +32,22 @@ function ThemeManager() {
 }
 
 function App() {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(() => {
+        try {
+            const stored = localStorage.getItem('gotpuzzled_user');
+            return stored ? JSON.parse(stored) : null;
+        } catch {
+            return null;
+        }
+    });
+
+    useEffect(() => {
+        if (user) {
+            localStorage.setItem('gotpuzzled_user', JSON.stringify(user));
+        } else {
+            localStorage.removeItem('gotpuzzled_user');
+        }
+    }, [user]);
 
     return (
         <VolumeProvider>

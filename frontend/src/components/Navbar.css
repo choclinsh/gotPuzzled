@@ -61,6 +61,10 @@
     font-size: 0.88rem;
     color: var(--text-secondary);
     margin-right: 0.25rem;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .details-btn,
@@ -131,6 +135,8 @@
     font-size: 0.88rem;
     color: var(--text-secondary);
     margin-bottom: 0.35rem;
+    overflow-wrap: break-word;
+    word-break: break-all;
 }
 
 .details-dropdown p strong { color: var(--text-primary); }

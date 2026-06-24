@@ -17,7 +17,6 @@ import React, { createContext, useContext, useState, useEffect, useRef } from 'r
 import {
     getVolume as getStoredVolume,
     setVolume as storeVolume,
-    getMuted as getStoredMuted,
     setMuted  as storeMuted,
 } from '../utils/puzzleUtils';
 

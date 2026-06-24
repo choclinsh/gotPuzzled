@@ -317,6 +317,8 @@ a:hover { color: var(--accent-hover); }
 
 .dashboard-wrapper > h2 {
     margin-bottom: 0.5rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 /* ---- Puzzle game menu ---- */
@@ -871,6 +873,10 @@ button[type="submit"]:disabled,
     flex: 1;
     font-size: 0.97rem;
     color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
 }
 
 .field-value em { color: var(--text-muted); font-style: italic; }

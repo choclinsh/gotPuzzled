@@ -18,7 +18,7 @@ router.get('/:id', validateId, verify_user(["admin","player"]), scoreController.
 
 router.get('/:id/:pieces/:rounds', validateId, verify_user(["admin","player"]), scoreController.getSpecificScore);  // GET — one score for an exact pieces/rounds combo
 
-router.get('/stats/:id', validateId, scoreController.getStats);  // GET /api/scores/stats/:id — dashboard stats
+router.get('/stats/:id', validateId, verify_user(["admin","manager", "player"]), scoreController.getStats);  // GET /api/scores/stats/:id — dashboard stats
 
 router.post('/:id', validateId, verify_user(["admin", "player"]),  // POST /api/scores/:id — record a new score after a game
     validateRequiredFields(["pieces", "rounds", "score"]), validateScoreData, scoreController.createScore);

@@ -15,9 +15,9 @@ import '../App.css';
 
 // Static configuration definitions matching your exact backend schema fields
 const FIELDS = [
-    { key: "firstName", label: "First Name", type: "text" },
-    { key: "lastName", label: "Last Name", type: "text" },
-    { key: "email", label: "Email Address", type: "email" },
+    { key: "firstName", label: "First Name", type: "text", maxLength: 30 },
+    { key: "lastName", label: "Last Name", type: "text", maxLength: 30 },
+    { key: "email", label: "Email Address", type: "email", maxLength: 100 },
     {
         key: "theme",
         label: "Theme Preference",
@@ -34,12 +34,15 @@ const FIELDS = [
 function validate(key, value) {
     if (key === "firstName") {
         if (!value.trim()) return "First name is required.";
+        if (value.trim().length > 30) return "First name must be 30 characters or fewer.";
     }
     if (key === "lastName") {
         if (!value.trim()) return "Last name is required.";
+        if (value.trim().length > 30) return "Last name must be 30 characters or fewer.";
     }
     if (key === "email") {
         if (!value.trim()) return "Email is required.";
+        if (value.trim().length > 100) return "Email must be 100 characters or fewer.";
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
             return "Please enter a valid email address.";
     }
@@ -47,7 +50,7 @@ function validate(key, value) {
 }
 
 // Reusable individual inline field editor row
-function FieldRow({ fieldKey, label, type, options, savedValue, fullSettings, onSaved }) {
+function FieldRow({ fieldKey, label, type, options, maxLength, savedValue, fullSettings, onSaved }) {
     const [editing, setEditing] = useState(false);
     const [draft, setDraft] = useState(savedValue);
     const [error, setError] = useState("");
@@ -142,10 +145,11 @@ function FieldRow({ fieldKey, label, type, options, savedValue, fullSettings, on
                             setError("");
                         }}
                         className={`field-input ${error ? "input-error" : ""}`}
+                        maxLength={maxLength}
                         autoFocus
                     />
                 ) : (
-                    <span className="field-value">{savedValue || <em>(Not set)</em>}</span>
+                    <span className="field-value" title={savedValue || ''}>{savedValue || <em>(Not set)</em>}</span>
                 )}
 
                 {editing ? (
@@ -292,6 +296,7 @@ export default function Settings() {
                             label={f.label}
                             type={f.type}
                             options={f.options}
+                            maxLength={f.maxLength}
                             savedValue={settings[f.key]}
                             fullSettings={settings}
                             onSaved={handleSaved}

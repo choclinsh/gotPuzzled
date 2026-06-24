@@ -155,9 +155,13 @@ export default function Dashboard() {
 
   const canPlay = topic.trim().length > 0 && !activating;
 
+  const displayName = (user?.firstName || '').length > 20
+    ? user.firstName.slice(0, 20) + '…'
+    : (user?.firstName || '');
+
   return (
     <div className="dashboard-wrapper dashboard-enter">
-      <h2>Welcome to your Puzzle Space, {user?.firstName}!</h2>
+      <h2>Welcome to your Puzzle Space, {displayName}!</h2>
       {error && <p className="error-message">{error}</p>}
 
       <div className="stats-row">

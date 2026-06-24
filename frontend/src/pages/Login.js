@@ -245,7 +245,7 @@ export default function Login() {
                 id="login-email" type="email" value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                disabled={busy}
+                disabled={busy} maxLength={100}
               />
             </div>
             <div className="input-group">
@@ -282,7 +282,7 @@ export default function Login() {
                 <input
                   id="signup-firstName" type="text" value={firstName}
                   onChange={e => setFirstName(e.target.value)}
-                  placeholder="First" disabled={busy}
+                  placeholder="First" disabled={busy} maxLength={30}
                 />
               </div>
               <div className="input-group">
@@ -290,7 +290,7 @@ export default function Login() {
                 <input
                   id="signup-lastName" type="text" value={lastName}
                   onChange={e => setLastName(e.target.value)}
-                  placeholder="Last" disabled={busy}
+                  placeholder="Last" disabled={busy} maxLength={30}
                 />
               </div>
             </div>
@@ -299,7 +299,7 @@ export default function Login() {
               <input
                 id="signup-email" type="email" value={signupEmail}
                 onChange={e => setSignupEmail(e.target.value)}
-                placeholder="you@example.com" disabled={busy}
+                placeholder="you@example.com" disabled={busy} maxLength={100}
               />
             </div>
             <div className="input-group">

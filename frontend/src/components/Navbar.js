@@ -47,7 +47,11 @@ export default function Navbar() {
 
             <div className="navbar__user">
                 {/* Optional chaining (?) prevents crashes if user is null for a split second */}
-                <span className="username">Welcome, {user?.firstName}!</span>
+                <span className="username" title={user?.firstName}>
+                    Welcome, {(user?.firstName || '').length > 15
+                        ? user.firstName.slice(0, 15) + '…'
+                        : user?.firstName}!
+                </span>
 
                 {/* 2. The Details Toggle Button */}
                 <button

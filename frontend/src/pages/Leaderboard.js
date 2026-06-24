@@ -5,7 +5,7 @@
  * the personal view and the global view (every user's scores, with a User ID
  * column). `viewMode` ("personal" | "global") drives the title and columns.
  */
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import UserContext from '../context/UserContext';
 import { scoreService } from '../services/scoreService';
 import '../App.css';
@@ -19,7 +19,7 @@ export default function Leaderboard() {
     const [error, setError] = useState('');
     const [viewMode, setViewMode] = useState('personal');
 
-    const fetchMyScores = async () => {
+    const fetchMyScores = useCallback(async () => {
         setIsLoading(true);
         try {
             const data = await scoreService.getPersonalScores(user.userId, user.userRole);
@@ -31,14 +31,14 @@ export default function Leaderboard() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [user]);
 
     // Load personal scores exactly once when the component mounts
     useEffect(() => {
         if (user && user.userId) {
             fetchMyScores();
         }
-    }, [user]);
+    }, [user, fetchMyScores]);
 
     // Your new function, renamed to be clear, attached to a button click
     const fetchGlobalScores = async () => {
