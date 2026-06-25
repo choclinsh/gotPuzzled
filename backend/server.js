@@ -23,21 +23,24 @@ const aiRoutes     = require('./src/routes/ai');
 const { sequelize } = require('./src/models/index');
 const setupCoopSocket   = require('./src/socket/coopHandler');
 const setupRacingSocket = require('./src/socket/racingHandler');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',')
+    : [];
+
+function isOriginAllowed(origin) {
+    if (!origin) return true;
+    if (origin.startsWith('http://localhost') || origin.startsWith('http://192.168.') || origin.startsWith('http://10.')) return true;
+    return ALLOWED_ORIGINS.some(o => origin === o.trim());
+}
+
 const io = new Server(server, {
     cors: {
-        origin: function (origin, callback) {
-            // Allow requests with no origin (like Postman or curl)
-            if (!origin) return callback(null, true);
-
-            // Allow if it's localhost OR a local network IP
-            if (origin.startsWith('http://localhost') || origin.startsWith('http://192.168.') || origin.startsWith('http://10.')) {
-                return callback(null, true);
-            }
-
-            // Block everything else
+        origin: (origin, callback) => {
+            if (isOriginAllowed(origin)) return callback(null, true);
             return callback(new Error('Not allowed by CORS'), false);
         },
         methods: ['GET', 'POST']
@@ -47,17 +50,8 @@ const io = new Server(server, {
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
-
-        // Allow localhost, standard home routers (192.168), and your current Wi-Fi (10.)
-        if (
-            origin.startsWith('http://localhost') ||
-            origin.startsWith('http://192.168.') ||
-            origin.startsWith('http://10.')
-        ) {
-            return callback(null, true);
-        }
+    origin: (origin, callback) => {
+        if (isOriginAllowed(origin)) return callback(null, true);
         return callback(new Error('Not allowed by CORS'), false);
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -72,13 +66,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/images', imagesRoutes);
 app.use('/api/ai',     aiRoutes);
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-app.get('/', (req, res) => {
-    res.json({
-        success: true,
-        data: { message: 'My Interactive Puzzle API is running!' },
-        error: null
-    });
+app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/')) return next();
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
 app.use((req, res) => {

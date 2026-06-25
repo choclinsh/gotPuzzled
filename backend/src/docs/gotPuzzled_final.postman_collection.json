@@ -1,14 +1,15 @@
 {
   "info": {
-    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "_postman_id": "0c923e0c-7555-4fb4-a874-9c35d9bbc2fd",
     "name": "gotPuzzled — Final",
     "description": "Complete REST API collection for the gotPuzzled puzzle application.\n\nAll routes are prefixed with /api. Authentication is header-based:\n  x-user-id   — the numeric userId of the caller\n  x-user-role — 'player' | 'admin' | 'manager'\n\nGroups:\n  Auth     — login / logout\n  Users    — CRUD for user accounts\n  Scores   — personal and global leaderboards\n  Images   — Pexels image generation for puzzles\n  AI       — Gemini topic-extraction for image search\n  Settings — current-user profile preferences",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53583351",
+    "_collection_link": "https://go.postman.co/collection/53583351-0c923e0c-7555-4fb4-a874-9c35d9bbc2fd?source=collection_link"
   },
   "item": [
     {
       "name": "Auth",
-      "description": "POST /api/auth/login and POST /api/auth/logout.\nNo tokens or sessions — the server returns userId + userRole which the frontend stores in React state.",
       "item": [
         {
           "name": "Login",
@@ -25,15 +26,23 @@
               "mode": "raw",
               "raw": "{\n  \"email\": \"max@mail.com\",\n  \"password\": \"secret123\"\n}",
               "options": {
-                "raw": { "language": "json" }
+                "raw": {
+                  "language": "json"
+                }
               }
             },
             "url": {
               "raw": "http://localhost:3000/api/auth/login",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "auth", "login"]
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             },
             "description": "Verify email + password. Returns { userId, userRole } on success.\n\nExpected response (200):\n{\n  \"success\": true,\n  \"data\": { \"message\": \"Login successful\", \"user\": { \"userId\": 1, \"userRole\": \"player\" } },\n  \"error\": null\n}"
           },
@@ -54,25 +63,33 @@
               "mode": "raw",
               "raw": "{}",
               "options": {
-                "raw": { "language": "json" }
+                "raw": {
+                  "language": "json"
+                }
               }
             },
             "url": {
               "raw": "http://localhost:3000/api/auth/logout",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "auth", "logout"]
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
             },
             "description": "Stateless logout acknowledgement — no server-side session to clear.\n\nExpected response (200):\n{\n  \"success\": true,\n  \"data\": { \"message\": \"Successfully logged out\" },\n  \"error\": null\n}"
           },
           "response": []
         }
-      ]
+      ],
+      "description": "POST /api/auth/login and POST /api/auth/logout.\nNo tokens or sessions — the server returns userId + userRole which the frontend stores in React state."
     },
     {
       "name": "Users",
-      "description": "CRUD endpoints for user accounts.\n\nGET /me and GET / require role-based headers.\nPOST / (create) is open — used by the sign-up flow.",
       "item": [
         {
           "name": "Get My Profile (me)",
@@ -93,9 +110,15 @@
             "url": {
               "raw": "http://localhost:3000/api/users/me",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "users", "me"]
+              "path": [
+                "api",
+                "users",
+                "me"
+              ]
             },
             "description": "Fetch the logged-in user's full profile. The user ID is read from the x-user-id header (no URL param needed).\n\nAllowed roles: player, admin"
           },
@@ -120,9 +143,14 @@
             "url": {
               "raw": "http://localhost:3000/api/users",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "users"]
+              "path": [
+                "api",
+                "users"
+              ]
             },
             "description": "Return every user in the database.\n\nAllowed roles: admin only"
           },
@@ -147,9 +175,15 @@
             "url": {
               "raw": "http://localhost:3000/api/users/1",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "users", "1"]
+              "path": [
+                "api",
+                "users",
+                "1"
+              ]
             },
             "description": "Fetch a single user by their numeric ID in the URL.\n\nAllowed roles: admin, player"
           },
@@ -170,15 +204,22 @@
               "mode": "raw",
               "raw": "{\n  \"firstName\": \"Max\",\n  \"lastName\": \"Black\",\n  \"userRole\": \"player\",\n  \"email\": \"max@mail.com\",\n  \"password\": \"secret123\"\n}",
               "options": {
-                "raw": { "language": "json" }
+                "raw": {
+                  "language": "json"
+                }
               }
             },
             "url": {
               "raw": "http://localhost:3000/api/users",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "users"]
+              "path": [
+                "api",
+                "users"
+              ]
             },
             "description": "Register a new user account. Also used by the frontend sign-up flow.\nRequired fields: firstName, lastName, userRole, email, password.\nuserRole must be one of: 'player', 'admin', 'manager'.\n\nExpected response (201):\n{\n  \"success\": true,\n  \"data\": { \"userId\": 5 },\n  \"error\": null\n}"
           },
@@ -209,15 +250,23 @@
               "mode": "raw",
               "raw": "{\n  \"firstName\": \"Alicia\",\n  \"lastName\": \"Cohen\",\n  \"email\": \"alicia@example.com\",\n  \"theme\": \"dark\"\n}",
               "options": {
-                "raw": { "language": "json" }
+                "raw": {
+                  "language": "json"
+                }
               }
             },
             "url": {
               "raw": "http://localhost:3000/api/users/1",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "users", "1"]
+              "path": [
+                "api",
+                "users",
+                "1"
+              ]
             },
             "description": "Update a user's profile. The URL :id and the x-user-id header must match for a player; admins may update any user.\nRequired fields: firstName, lastName. Optional: email, theme.\n\nAllowed roles: admin, player, manager"
           },
@@ -242,19 +291,25 @@
             "url": {
               "raw": "http://localhost:3000/api/users/5",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "users", "5"]
+              "path": [
+                "api",
+                "users",
+                "5"
+              ]
             },
             "description": "Remove a user and cascade-delete all of their score records.\nReturns the count of deleted scores for transparency.\n\nAllowed roles: admin, player"
           },
           "response": []
         }
-      ]
+      ],
+      "description": "CRUD endpoints for user accounts.\n\nGET /me and GET / require role-based headers.\nPOST / (create) is open — used by the sign-up flow."
     },
     {
       "name": "Scores",
-      "description": "Endpoints for personal leaderboards, global leaderboards, and dashboard stats.\n\nScore times are stored and submitted in HH:MM:SS format (e.g. \"00:03:42\").\nThe POST endpoint returns 400 ALREADY_EXISTS when a record for the same user/pieces/rounds combo exists — the client should fall back to PUT.",
       "item": [
         {
           "name": "Get All Scores (Global Leaderboard)",
@@ -275,9 +330,14 @@
             "url": {
               "raw": "http://localhost:3000/api/scores",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "scores"]
+              "path": [
+                "api",
+                "scores"
+              ]
             },
             "description": "Return every score in the database joined with owner info.\n\nAllowed roles: admin only"
           },
@@ -302,9 +362,15 @@
             "url": {
               "raw": "http://localhost:3000/api/scores/1",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "scores", "1"]
+              "path": [
+                "api",
+                "scores",
+                "1"
+              ]
             },
             "description": "Return all scores for a specific user (their personal leaderboard).\n\nAllowed roles: admin, player"
           },
@@ -329,9 +395,17 @@
             "url": {
               "raw": "http://localhost:3000/api/scores/1/9/3",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "scores", "1", "9", "3"]
+              "path": [
+                "api",
+                "scores",
+                "1",
+                "9",
+                "3"
+              ]
             },
             "description": "Look up one exact score record: user 1, 9 pieces, 3 rounds.\nURL pattern: /api/scores/:id/:pieces/:rounds\n\nAllowed roles: admin, player"
           },
@@ -356,9 +430,16 @@
             "url": {
               "raw": "http://localhost:3000/api/scores/stats/1",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "scores", "stats", "1"]
+              "path": [
+                "api",
+                "scores",
+                "stats",
+                "1"
+              ]
             },
             "description": "Return aggregated stats for the dashboard: topPieces, topRounds, fastestScore.\nReturns 404 (not an error) when the user has no scores yet.\n\nExpected response (200):\n{\n  \"success\": true,\n  \"data\": { \"topPieces\": 25, \"topRounds\": 5, \"fastestScore\": \"00:02:18\" },\n  \"error\": null\n}"
           },
@@ -389,15 +470,23 @@
               "mode": "raw",
               "raw": "{\n  \"pieces\": 25,\n  \"rounds\": 3,\n  \"score\": \"00:04:32\"\n}",
               "options": {
-                "raw": { "language": "json" }
+                "raw": {
+                  "language": "json"
+                }
               }
             },
             "url": {
               "raw": "http://localhost:3000/api/scores/1",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "scores", "1"]
+              "path": [
+                "api",
+                "scores",
+                "1"
+              ]
             },
             "description": "Record a new score after a game session.\nRequired: pieces (integer), rounds (integer), score (HH:MM:SS string).\n\nReturns 400 ALREADY_EXISTS if a record for this user/pieces/rounds combo already exists — use PUT to update it instead.\n\nAllowed roles: admin, player"
           },
@@ -428,25 +517,33 @@
               "mode": "raw",
               "raw": "{\n  \"pieces\": 25,\n  \"rounds\": 3,\n  \"score\": \"00:03:17\"\n}",
               "options": {
-                "raw": { "language": "json" }
+                "raw": {
+                  "language": "json"
+                }
               }
             },
             "url": {
               "raw": "http://localhost:3000/api/scores/1",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "scores", "1"]
+              "path": [
+                "api",
+                "scores",
+                "1"
+              ]
             },
             "description": "Update an existing score — only overwrites if the new time is strictly better (lower).\nRequired: pieces (integer), rounds (integer), score (HH:MM:SS string).\n\nResponse includes isNewRecord: true if the time was improved.\n\nAllowed roles: admin, manager, player"
           },
           "response": []
         }
-      ]
+      ],
+      "description": "Endpoints for personal leaderboards, global leaderboards, and dashboard stats.\n\nScore times are stored and submitted in HH:MM:SS format (e.g. \"00:03:42\").\nThe POST endpoint returns 400 ALREADY_EXISTS when a record for the same user/pieces/rounds combo exists — the client should fall back to PUT."
     },
     {
       "name": "Images",
-      "description": "Wraps the Pexels API so the PEXELS_API_KEY stays server-side.\nReturns an array of direct image URLs ready to use as puzzle backgrounds.",
       "item": [
         {
           "name": "Generate Images",
@@ -456,9 +553,15 @@
             "url": {
               "raw": "http://localhost:3000/api/images/generate?topic=sunset mountains&count=3",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "images", "generate"],
+              "path": [
+                "api",
+                "images",
+                "generate"
+              ],
               "query": [
                 {
                   "key": "topic",
@@ -476,11 +579,11 @@
           },
           "response": []
         }
-      ]
+      ],
+      "description": "Wraps the Pexels API so the PEXELS_API_KEY stays server-side.\nReturns an array of direct image URLs ready to use as puzzle backgrounds."
     },
     {
       "name": "AI",
-      "description": "Gemini Flash AI endpoint. Converts a user's free-text description into a short, clean image search keyword.\n\nThe Gemini API key is stored server-side and never exposed to the browser.",
       "item": [
         {
           "name": "Extract Topic",
@@ -497,25 +600,33 @@
               "mode": "raw",
               "raw": "{\n  \"text\": \"I want a puzzle about a beautiful forest in autumn with red and orange leaves\"\n}",
               "options": {
-                "raw": { "language": "json" }
+                "raw": {
+                  "language": "json"
+                }
               }
             },
             "url": {
               "raw": "http://localhost:3000/api/ai/extract",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "ai", "extract"]
+              "path": [
+                "api",
+                "ai",
+                "extract"
+              ]
             },
             "description": "Send a free-text description; receive a short refined keyword suitable for image search.\n\nRequired body field: text (non-empty string)\n\nExpected response (200):\n{\n  \"success\": true,\n  \"data\": \"autumn forest\",\n  \"error\": null\n}"
           },
           "response": []
         }
-      ]
+      ],
+      "description": "Gemini Flash AI endpoint. Converts a user's free-text description into a short, clean image search keyword.\n\nThe Gemini API key is stored server-side and never exposed to the browser."
     },
     {
       "name": "Settings",
-      "description": "Convenience routes for the current user's profile preferences.\nThe user ID is read from the x-user-id header — no URL parameter needed.",
       "item": [
         {
           "name": "Get Settings",
@@ -536,9 +647,14 @@
             "url": {
               "raw": "http://localhost:3000/api/settings",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "settings"]
+              "path": [
+                "api",
+                "settings"
+              ]
             },
             "description": "Fetch the current user's full profile (name, email, theme preference).\nID is taken from x-user-id header.\n\nAllowed roles: admin, player, manager"
           },
@@ -569,21 +685,29 @@
               "mode": "raw",
               "raw": "{\n  \"firstName\": \"Max\",\n  \"lastName\": \"Black\",\n  \"email\": \"max@mail.com\",\n  \"theme\": \"dark\"\n}",
               "options": {
-                "raw": { "language": "json" }
+                "raw": {
+                  "language": "json"
+                }
               }
             },
             "url": {
               "raw": "http://localhost:3000/api/settings",
               "protocol": "http",
-              "host": ["localhost"],
+              "host": [
+                "localhost"
+              ],
               "port": "3000",
-              "path": ["api", "settings"]
+              "path": [
+                "api",
+                "settings"
+              ]
             },
             "description": "Update the current user's profile preferences.\nID is taken from x-user-id header — no URL param.\nRequired: firstName, lastName. Optional: email, theme ('light' | 'dark' | 'retro').\n\nAllowed roles: admin, player, manager"
           },
           "response": []
         }
-      ]
+      ],
+      "description": "Convenience routes for the current user's profile preferences.\nThe user ID is read from the x-user-id header — no URL parameter needed."
     },
     {
       "name": "Health Check",
@@ -593,9 +717,13 @@
         "url": {
           "raw": "http://localhost:3000/",
           "protocol": "http",
-          "host": ["localhost"],
+          "host": [
+            "localhost"
+          ],
           "port": "3000",
-          "path": [""]
+          "path": [
+            ""
+          ]
         },
         "description": "Root endpoint — confirms the Express server is running.\n\nExpected response (200):\n{\n  \"success\": true,\n  \"data\": { \"message\": \"My Interactive Puzzle API is running!\" },\n  \"error\": null\n}"
       },

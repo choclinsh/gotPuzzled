@@ -23,13 +23,17 @@ const SYSTEM_INSTRUCTION =
  * @throws Will throw if the Groq API call fails or the key is invalid.
  */
 async function extractTopicFromText(userText) {
-    const completion = await groq.chat.completions.create({
+    const { data: completion, response: rawResponse } = await groq.chat.completions.create({
         model: 'llama-3.1-8b-instant',
         messages: [
             { role: 'system', content: SYSTEM_INSTRUCTION },
             { role: 'user',   content: userText },
         ],
-    });
+    }).withResponse();
+
+    const remainingRequests = rawResponse.headers.get('x-ratelimit-remaining-requests') ?? 'N/A';
+    const remainingTokens   = rawResponse.headers.get('x-ratelimit-remaining-tokens')   ?? 'N/A';
+    process.stdout.write(`[AI] Rate limits — Remaining requests (day): ${remainingRequests} | Remaining tokens (min): ${remainingTokens}\n`);
 
     const refined = completion.choices[0].message.content.trim();
     console.log(`[AI] "${userText}" → "${refined}"`);

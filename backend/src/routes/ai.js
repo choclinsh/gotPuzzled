@@ -1,7 +1,7 @@
 /**
  * routes/ai.js — /api/ai endpoints.
  *
- * Exposes the Gemini AI keyword-extraction pipeline to the frontend.
+ * Exposes the Groq AI keyword-extraction pipeline to the frontend.
  * The API key is stored server-side only (never sent to the browser).
  */
 const express = require('express');
@@ -11,7 +11,7 @@ const { extractTopicFromText } = require('../services/aiService');
 /**
  * POST /api/ai/extract
  * Accepts a free-text sentence and returns a short, clean image search query
- * produced by the Gemini Flash model.
+ * produced by the Groq model.
  *
  * Request body: { text: string }
  * Response:     { success: true, data: "refined query", error: null }
