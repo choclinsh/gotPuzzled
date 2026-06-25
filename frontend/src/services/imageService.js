@@ -5,7 +5,7 @@
  * never exposed to the browser. The backend handles Pexels fetching, shuffling,
  * and the fallback-to-"abstract" mechanic transparently.
  */
-const BASE_URL = `${process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'}/api/images`;
+const BASE_URL = `${process.env.REACT_APP_BACKEND_URL || ''}/api/images`;
 
 export const imageService = {
     /**

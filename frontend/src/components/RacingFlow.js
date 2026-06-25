@@ -23,7 +23,7 @@ import RacingGame from './RacingGame';
 import CountdownOverlay from './CountdownOverlay';
 import './PuzzleGame.css';
 
-const SOCKET_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000';
+const SOCKET_URL = process.env.REACT_APP_BACKEND_URL || window.location.origin;
 
 
 export default function RacingFlow({ pieces, rounds, topic, onBack }) {

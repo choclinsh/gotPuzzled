@@ -4,7 +4,7 @@
  * id/role are sent as x-user-id / x-user-role headers. Methods return just the
  * `data` payload (not the full envelope) and throw on unexpected errors.
  */
-const BASE_URL = `${process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'}/api/scores`;
+const BASE_URL = `${process.env.REACT_APP_BACKEND_URL || ''}/api/scores`;
 
 export const scoreService = {
     /** GET /scores/:id — the logged-in player's own scores. */

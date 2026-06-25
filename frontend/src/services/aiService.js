@@ -5,7 +5,7 @@
  * exposed to the browser. The backend handles the Groq call and returns
  * a clean JSON envelope.
  */
-const BASE_URL = `${process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'}/api/ai`;
+const BASE_URL = `${process.env.REACT_APP_BACKEND_URL || ''}/api/ai`;
 
 export const aiService = {
     /**

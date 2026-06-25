@@ -4,7 +4,7 @@
  * Talks to the /api/settings routes, which act on the user identified by the
  * x-user-id / x-user-role headers. Methods return just the `data` payload.
  */
-const API_BASE_URL = `${process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'}/api/settings`;
+const API_BASE_URL = `${process.env.REACT_APP_BACKEND_URL || ''}/api/settings`;
 
 export const settingsService = {
 

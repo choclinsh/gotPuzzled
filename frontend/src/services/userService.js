@@ -4,7 +4,7 @@
  * The id/role are passed as the x-user-id / x-user-role headers the backend
  * auth middleware expects.
  */
-const BASE_URL = `${process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'}/api/users`;
+const BASE_URL = `${process.env.REACT_APP_BACKEND_URL || ''}/api/users`;
 
 export const userService = {
     /** GET /users/me — fetch the logged-in user's full profile after login. */

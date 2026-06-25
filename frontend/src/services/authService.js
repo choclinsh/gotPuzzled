@@ -4,7 +4,7 @@
  * The backend port comes from REACT_APP_BACKEND_PORT (.env), defaulting to 3000.
  * Each method throws an Error with the backend's message on a non-OK response.
  */
-const BASE_URL = `${process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'}/api`;
+const BASE_URL = `${process.env.REACT_APP_BACKEND_URL || ''}/api`;
 
 export const authService = {
     /** POST /auth/login — returns the parsed envelope { data: { user: {...} } }. */
