@@ -18,22 +18,27 @@ const { User, Score } = require('../models');
  * @param {import('express').Response} res - JSON response with the user object.
  */
 async function getUserById(req, res) {
-    const rawId = req.params.id || req.headers['x-user-id'];
-    const id = parseInt(rawId);
+    try {
+        const rawId = req.params.id || req.headers['x-user-id'];
+        const id = parseInt(rawId);
 
-    const user = await User.findByPk(id);
-    if (!user) {
-        return res.status(404).json({
-            success: false,
-            data: null,
-            error: {
-                code: 'NOT_FOUND',
-                message: "The user doesn't exist. Please create one and try again.",
-                details: {}
-            }
-        });
+        const user = await User.findByPk(id);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                data: null,
+                error: {
+                    code: 'NOT_FOUND',
+                    message: "The user doesn't exist. Please create one and try again.",
+                    details: {}
+                }
+            });
+        }
+        res.status(200).json({ success: true, data: user, error: null });
+    } catch (err) {
+        console.error('[getUserById]', err.message);
+        res.status(500).json({ success: false, data: null, error: { code: 'DATABASE_ERROR', message: err.message, details: {} } });
     }
-    res.status(200).json({ success: true, data: user, error: null });
 }
 
 /**
@@ -45,8 +50,13 @@ async function getUserById(req, res) {
  * @param {import('express').Response} res - JSON array of all user rows.
  */
 async function getAllUsers(req, res) {
-    const users = await User.findAll();
-    res.status(200).json({ success: true, data: users, error: null });
+    try {
+        const users = await User.findAll();
+        res.status(200).json({ success: true, data: users, error: null });
+    } catch (err) {
+        console.error('[getAllUsers]', err.message);
+        res.status(500).json({ success: false, data: null, error: { code: 'DATABASE_ERROR', message: err.message, details: {} } });
+    }
 }
 
 /**
@@ -58,24 +68,29 @@ async function getAllUsers(req, res) {
  * @param {import('express').Response} res - 201 with { userId } on success.
  */
 async function createUser(req, res) {
-    const { firstName, lastName, userRole, email, password } = req.body;
+    try {
+        const { firstName, lastName, userRole, email, password } = req.body;
 
-    const existing = await User.findOne({ where: { email } });
-    if (existing) {
-        return res.status(409).json({
-            success: false,
-            data: null,
-            error: { code: 'EMAIL_TAKEN', message: 'An account with this email already exists.' }
+        const existing = await User.findOne({ where: { email } });
+        if (existing) {
+            return res.status(409).json({
+                success: false,
+                data: null,
+                error: { code: 'EMAIL_TAKEN', message: 'An account with this email already exists.' }
+            });
+        }
+
+        const newUser = await User.create({ firstName, lastName, userRole, email, password, theme: 'light' });
+
+        return res.status(201).json({
+            success: true,
+            data: { userId: newUser.userId },
+            error: null
         });
+    } catch (err) {
+        console.error('[createUser]', err.message);
+        res.status(500).json({ success: false, data: null, error: { code: 'DATABASE_ERROR', message: err.message, details: {} } });
     }
-
-    const newUser = await User.create({ firstName, lastName, userRole, email, password, theme: 'light' });
-
-    return res.status(201).json({
-        success: true,
-        data: { userId: newUser.userId },
-        error: null
-    });
 }
 
 /**
@@ -87,34 +102,39 @@ async function createUser(req, res) {
  * @param {import('express').Response} res - 200 with the updated user object.
  */
 async function updateUser(req, res) {
-    const rawId = req.params.id || req.headers['x-user-id'];
-    const id = parseInt(rawId);
+    try {
+        const rawId = req.params.id || req.headers['x-user-id'];
+        const id = parseInt(rawId);
 
-    const user = await User.findByPk(id);
-    if (!user) {
-        return res.status(404).json({
-            success: false,
-            data: null,
-            error: { code: 'NOT_FOUND', message: 'User not found', details: {} }
-        });
-    }
-
-    const { firstName, lastName, email, theme } = req.body;
-
-    if (email && email !== user.email) {
-        const taken = await User.findOne({ where: { email, userId: { [Op.ne]: id } } });
-        if (taken) {
-            return res.status(409).json({
+        const user = await User.findByPk(id);
+        if (!user) {
+            return res.status(404).json({
                 success: false,
                 data: null,
-                error: { code: 'EMAIL_TAKEN', message: 'This email is already in use by another account.' }
+                error: { code: 'NOT_FOUND', message: 'User not found', details: {} }
             });
         }
+
+        const { firstName, lastName, email, theme } = req.body;
+
+        if (email && email !== user.email) {
+            const taken = await User.findOne({ where: { email, userId: { [Op.ne]: id } } });
+            if (taken) {
+                return res.status(409).json({
+                    success: false,
+                    data: null,
+                    error: { code: 'EMAIL_TAKEN', message: 'This email is already in use by another account.' }
+                });
+            }
+        }
+
+        await user.update({ firstName, lastName, email, theme });
+
+        return res.status(200).json({ success: true, data: user, error: null });
+    } catch (err) {
+        console.error('[updateUser]', err.message);
+        res.status(500).json({ success: false, data: null, error: { code: 'DATABASE_ERROR', message: err.message, details: {} } });
     }
-
-    await user.update({ firstName, lastName, email, theme });
-
-    return res.status(200).json({ success: true, data: user, error: null });
 }
 
 /**
@@ -126,16 +146,21 @@ async function updateUser(req, res) {
  * @param {import('express').Response} res - 200 with { userId, deletedScores }.
  */
 async function deleteUser(req, res) {
-    const id = parseInt(req.params.id);
+    try {
+        const id = parseInt(req.params.id);
 
-    const deletedScores = await Score.destroy({ where: { userId: id } });
-    await User.destroy({ where: { userId: id } });
+        const deletedScores = await Score.destroy({ where: { userId: id } });
+        await User.destroy({ where: { userId: id } });
 
-    return res.status(200).json({
-        success: true,
-        data: { userId: id, deletedScores },
-        error: null
-    });
+        return res.status(200).json({
+            success: true,
+            data: { userId: id, deletedScores },
+            error: null
+        });
+    } catch (err) {
+        console.error('[deleteUser]', err.message);
+        res.status(500).json({ success: false, data: null, error: { code: 'DATABASE_ERROR', message: err.message, details: {} } });
+    }
 }
 
 /**
@@ -151,25 +176,30 @@ async function deleteUser(req, res) {
  * @param {import('express').Response} res - 200 with { userId, userRole } or 401.
  */
 async function loginUser(req, res) {
-    const { email, password } = req.body;
+    try {
+        const { email, password } = req.body;
 
-    const user = await User.findOne({ where: { email, password } });
-    if (!user) {
-        return res.status(401).json({
-            success: false,
-            data: null,
-            error: { code: 'INVALID_CREDENTIALS', message: 'Invalid email or password.' }
+        const user = await User.findOne({ where: { email, password } });
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                data: null,
+                error: { code: 'INVALID_CREDENTIALS', message: 'Invalid email or password.' }
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: {
+                message: 'Login successful',
+                user: { userId: user.userId, userRole: user.userRole }
+            },
+            error: null
         });
+    } catch (err) {
+        console.error('[loginUser]', err.message);
+        res.status(500).json({ success: false, data: null, error: { code: 'DATABASE_ERROR', message: err.message, details: {} } });
     }
-
-    res.status(200).json({
-        success: true,
-        data: {
-            message: 'Login successful',
-            user: { userId: user.userId, userRole: user.userRole }
-        },
-        error: null
-    });
 }
 
 module.exports = { getAllUsers, getUserById, createUser, updateUser, deleteUser, loginUser };

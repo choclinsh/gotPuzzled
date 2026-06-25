@@ -32,17 +32,22 @@ function formatScore(s) {
  * @param {import('express').Response} res - JSON array of the user's scores, or 404.
  */
 async function getScoresById(req, res) {
-    const id = parseInt(req.params.id);
-    const userScores = await Score.findAll({ where: { userId: id } });
+    try {
+        const id = parseInt(req.params.id);
+        const userScores = await Score.findAll({ where: { userId: id } });
 
-    if (userScores.length === 0) {
-        return res.status(404).json({
-            success: false,
-            data: null,
-            error: { code: 'NOT_FOUND', message: 'No scores found', details: {} }
-        });
+        if (userScores.length === 0) {
+            return res.status(404).json({
+                success: false,
+                data: null,
+                error: { code: 'NOT_FOUND', message: 'No scores found', details: {} }
+            });
+        }
+        res.status(200).json({ success: true, data: userScores.map(formatScore), error: null });
+    } catch (err) {
+        console.error('[getScoresById]', err.message);
+        res.status(500).json({ success: false, data: null, error: { code: 'DATABASE_ERROR', message: err.message, details: {} } });
     }
-    res.status(200).json({ success: true, data: userScores.map(formatScore), error: null });
 }
 
 /**
@@ -54,23 +59,28 @@ async function getScoresById(req, res) {
  * @param {import('express').Response} res - The matching score or 404.
  */
 async function getSpecificScore(req, res) {
-    const id     = parseInt(req.params.id);
-    const pieces = parseInt(req.params.pieces);
-    const rounds = parseInt(req.params.rounds);
+    try {
+        const id     = parseInt(req.params.id);
+        const pieces = parseInt(req.params.pieces);
+        const rounds = parseInt(req.params.rounds);
 
-    const score = await Score.findOne({ where: { userId: id, pieces, rounds } });
-    if (!score) {
-        return res.status(404).json({
-            success: false,
-            data: null,
-            error: {
-                code: 'NOT_FOUND',
-                message: `Score for user ${id}, ${rounds} rounds, ${pieces} pieces not found`,
-                details: {}
-            }
-        });
+        const score = await Score.findOne({ where: { userId: id, pieces, rounds } });
+        if (!score) {
+            return res.status(404).json({
+                success: false,
+                data: null,
+                error: {
+                    code: 'NOT_FOUND',
+                    message: `Score for user ${id}, ${rounds} rounds, ${pieces} pieces not found`,
+                    details: {}
+                }
+            });
+        }
+        res.status(200).json({ success: true, data: formatScore(score), error: null });
+    } catch (err) {
+        console.error('[getSpecificScore]', err.message);
+        res.status(500).json({ success: false, data: null, error: { code: 'DATABASE_ERROR', message: err.message, details: {} } });
     }
-    res.status(200).json({ success: true, data: formatScore(score), error: null });
 }
 
 /**
@@ -82,12 +92,17 @@ async function getSpecificScore(req, res) {
  * @param {import('express').Response} res - Array of all scores with nested user data.
  */
 async function getAllScores(req, res) {
-    const scores = await Score.findAll({
-        include: [
-            { model: User, as: 'user', attributes: ['userId', 'firstName', 'lastName', 'userRole'] }
-        ]
-    });
-    res.status(200).json({ success: true, data: scores.map(formatScore), error: null });
+    try {
+        const scores = await Score.findAll({
+            include: [
+                { model: User, as: 'user', attributes: ['userId', 'firstName', 'lastName', 'userRole'] }
+            ]
+        });
+        res.status(200).json({ success: true, data: scores.map(formatScore), error: null });
+    } catch (err) {
+        console.error('[getAllScores]', err.message);
+        res.status(500).json({ success: false, data: null, error: { code: 'DATABASE_ERROR', message: err.message, details: {} } });
+    }
 }
 
 /**
@@ -99,24 +114,29 @@ async function getAllScores(req, res) {
  * @param {import('express').Response} res - 201 with the created score, or 400 if already exists.
  */
 async function createScore(req, res) {
-    const id = parseInt(req.params.id);
-    const { pieces, rounds, score } = req.body;
+    try {
+        const id = parseInt(req.params.id);
+        const { pieces, rounds, score } = req.body;
 
-    const existing = await Score.findOne({ where: { userId: id, pieces, rounds } });
-    if (existing) {
-        return res.status(400).json({
-            success: false,
-            data: null,
-            error: {
-                code: 'ALREADY_EXISTS',
-                message: `Score for user ${id}, ${rounds} rounds, ${pieces} pieces already exists`,
-                details: { Tip: 'Update, dont Create' }
-            }
-        });
+        const existing = await Score.findOne({ where: { userId: id, pieces, rounds } });
+        if (existing) {
+            return res.status(400).json({
+                success: false,
+                data: null,
+                error: {
+                    code: 'ALREADY_EXISTS',
+                    message: `Score for user ${id}, ${rounds} rounds, ${pieces} pieces already exists`,
+                    details: { Tip: 'Update, dont Create' }
+                }
+            });
+        }
+
+        const newScore = await Score.create({ userId: id, pieces, rounds, timeScore: score });
+        return res.status(201).json({ success: true, data: { ...formatScore(newScore), isNewRecord: true }, error: null });
+    } catch (err) {
+        console.error('[createScore]', err.message);
+        res.status(500).json({ success: false, data: null, error: { code: 'DATABASE_ERROR', message: err.message, details: {} } });
     }
-
-    const newScore = await Score.create({ userId: id, pieces, rounds, timeScore: score });
-    return res.status(201).json({ success: true, data: { ...formatScore(newScore), isNewRecord: true }, error: null });
 }
 
 /**
@@ -128,29 +148,34 @@ async function createScore(req, res) {
  * @param {import('express').Response} res - 200 with the score and `isNewRecord` flag.
  */
 async function updateScore(req, res) {
-    const id = parseInt(req.params.id);
-    const { rounds, pieces, score } = req.body;
+    try {
+        const id = parseInt(req.params.id);
+        const { rounds, pieces, score } = req.body;
 
-    const existing = await Score.findOne({ where: { userId: id, pieces, rounds } });
-    if (!existing) {
-        return res.status(404).json({
-            success: false,
-            data: null,
-            error: {
-                code: 'NOT_FOUND',
-                message: `Score for user ${id}, ${rounds} rounds, ${pieces} pieces not found`,
-                details: {}
-            }
-        });
+        const existing = await Score.findOne({ where: { userId: id, pieces, rounds } });
+        if (!existing) {
+            return res.status(404).json({
+                success: false,
+                data: null,
+                error: {
+                    code: 'NOT_FOUND',
+                    message: `Score for user ${id}, ${rounds} rounds, ${pieces} pieces not found`,
+                    details: {}
+                }
+            });
+        }
+
+        // Only overwrite if the new time is strictly better (time strings compare lexicographically in HH:MM:SS)
+        const wasImproved = score < existing.timeScore;
+        if (wasImproved) {
+            await existing.update({ timeScore: score });
+        }
+
+        return res.status(200).json({ success: true, data: { ...formatScore(existing), isNewRecord: wasImproved }, error: null });
+    } catch (err) {
+        console.error('[updateScore]', err.message);
+        res.status(500).json({ success: false, data: null, error: { code: 'DATABASE_ERROR', message: err.message, details: {} } });
     }
-
-    // Only overwrite if the new time is strictly better (time strings compare lexicographically in HH:MM:SS)
-    const wasImproved = score < existing.timeScore;
-    if (wasImproved) {
-        await existing.update({ timeScore: score });
-    }
-
-    return res.status(200).json({ success: true, data: { ...formatScore(existing), isNewRecord: wasImproved }, error: null });
 }
 
 /**
@@ -167,34 +192,39 @@ async function updateScore(req, res) {
  * @param {import('express').Response} res - 200 with { topPieces, topRounds, fastestScore }, or 404.
  */
 async function getStats(req, res) {
-    const rawId = req.headers['x-user-id'] || req.params.id;
-    const id = parseInt(rawId);
+    try {
+        const rawId = req.headers['x-user-id'] || req.params.id;
+        const id = parseInt(rawId);
 
-    // Relational query: load the user together with all their scores in one call
-    const userWithScores = await User.findByPk(id, {
-        include: [{ model: Score, as: 'scores' }]
-    });
-
-    if (!userWithScores || userWithScores.scores.length === 0) {
-        return res.status(404).json({
-            success: false,
-            data: null,
-            error: { code: 'NOT_FOUND', message: `No scores found for user ${id}`, details: {} }
+        // Relational query: load the user together with all their scores in one call
+        const userWithScores = await User.findByPk(id, {
+            include: [{ model: Score, as: 'scores' }]
         });
+
+        if (!userWithScores || userWithScores.scores.length === 0) {
+            return res.status(404).json({
+                success: false,
+                data: null,
+                error: { code: 'NOT_FOUND', message: `No scores found for user ${id}`, details: {} }
+            });
+        }
+
+        const userScores = userWithScores.scores;
+
+        // Derive summary stats by reducing over the loaded scores
+        const topPieces    = userScores.reduce((max, s) => s.pieces > max ? s.pieces : max,       userScores[0].pieces);
+        const topRounds    = userScores.reduce((max, s) => s.rounds > max ? s.rounds : max,       userScores[0].rounds);
+        const fastestScore = userScores.reduce((min, s) => s.timeScore < min ? s.timeScore : min, userScores[0].timeScore);
+
+        res.status(200).json({
+            success: true,
+            data: { topPieces, topRounds, fastestScore },
+            error: null
+        });
+    } catch (err) {
+        console.error('[getStats]', err.message);
+        res.status(500).json({ success: false, data: null, error: { code: 'DATABASE_ERROR', message: err.message, details: {} } });
     }
-
-    const userScores = userWithScores.scores;
-
-    // Derive summary stats by reducing over the loaded scores
-    const topPieces    = userScores.reduce((max, s) => s.pieces > max ? s.pieces : max,         userScores[0].pieces);
-    const topRounds    = userScores.reduce((max, s) => s.rounds > max ? s.rounds : max,         userScores[0].rounds);
-    const fastestScore = userScores.reduce((min, s) => s.timeScore < min ? s.timeScore : min,   userScores[0].timeScore);
-
-    res.status(200).json({
-        success: true,
-        data: { topPieces, topRounds, fastestScore },
-        error: null
-    });
 }
 
 module.exports = { getAllScores, getScoresById, getSpecificScore, createScore, updateScore, getStats };
