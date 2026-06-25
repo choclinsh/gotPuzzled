@@ -67,6 +67,7 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/images', imagesRoutes);
 app.use('/api/ai',     aiRoutes);
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.use(express.static(path.join(__dirname, '../frontend/public')));
 
 app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api/')) return next();
